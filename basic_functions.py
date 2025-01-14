@@ -35,17 +35,3 @@ def evade_correcting_angle(left_motor, right_motor):
     left_motor.reset()
     right_motor.reset()
     return
-
-
-# Función para rodear una lata
-def rodear_lata(left_motor, right_motor):
-    # Supongamos que la lata tiene un diámetro aproximado de 7 cm
-    diametro_lata = 7.0
-    distancia_alrededor = pi * (ancho_robot + diametro_lata)  # Circunferencia del rodeo
-    avanzar_cm(distancia_alrededor / 4,left_motor, right_motor, velocidad=20)  # Avanza un cuarto del círculo
-    girar_grados(90, left_motor, right_motor,velocidad=20)  # Gira 90 grados
-    avanzar_cm(distancia_alrededor / 4,left_motor, right_motor, velocidad=20)  # Avanza otro cuarto
-    girar_grados(90, left_motor, right_motor,velocidad=20)  # Gira 90 grados
-    avanzar_cm(distancia_alrededor / 4,left_motor, right_motor, velocidad=20)  # Avanza otro cuarto
-    girar_grados(90, left_motor, right_motor,velocidad=20)  # Gira 90 grados
-    avanzar_cm(distancia_alrededor / 4,left_motor, right_motor, velocidad=20)  # Completa el rodeo
