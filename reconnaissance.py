@@ -50,14 +50,13 @@ def sweep(right_motor, left_motor, ultrasonic_sensor, max_degrees_right, max_deg
         # No hay detección de una segunda lata
         min_distance_angle_second_can = None
         min_distance_second_can = None
-
-    # Calculamos alpha, que se corresponde con el ángulo que hay entre la línea perpendicular 
-    # a la línea negra de las latas y el robot
-    numerador = (min_distance_first_can^2 - min_distance_first_can - 16)/8
-    denominador = math.sqrt(min_distance_first_can^2 - numerador^2)
-    alpha = math.degrees(math.atan(numerador/denominador))
-
-    # Giramos hacia el angulo de la detección de la primera lata
-    girar_grados(min_distance_angle_first_can, left_motor, right_motor)
     
     return min_distance_angle_first_can, min_distance_first_can, min_distance_angle_second_can, min_distance_second_can
+
+def turn_to_obstacle(angle_first_can, left_motor, right_motor):
+    """
+    Función que gira el robot para que quede mirando a la primera lata
+    """
+    girar_grados(angle_first_can, left_motor, right_motor)
+    
+    
