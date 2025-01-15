@@ -32,7 +32,6 @@ def go_to_line(left_motor, right_motor, color_sensor, angle_to_line):
     avanzar_cm(5, left_motor, right_motor, velocidad=20)
 
 def go_to_gap(first_obstacle_distance, second_obstacle_distance, angle_between_obstacles, left_motor, right_motor, color_sensor):
-    girar_grados(angle_between_obstacles/2, left_motor, right_motor, velocidad=20)
-    go_to_line(left_motor, right_motor, color_sensor, 0)
+    go_to_line(left_motor, right_motor, color_sensor, angle_between_obstacles/2)
 
 
