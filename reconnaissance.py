@@ -61,13 +61,3 @@ def sweep(right_motor, left_motor, ultrasonic_sensor, max_degrees_right, max_deg
     girar_grados(min_distance_angle_first_can, left_motor, right_motor)
     
     return min_distance_angle_first_can, min_distance_first_can, min_distance_angle_second_can, min_distance_second_can
-
-def angle_to_line(distance_to_first_can):
-    # Calculamos el ángulo de giro que se necesita para caminar perpendicularmente a la línea negra
-    numerador = (distance_to_first_can^2 - distance_to_first_can - 16)/8
-    denominador = math.sqrt(distance_to_first_can^2 - numerador^2)
-
-    # Calculamos el ángulo con el arcotangente y pasamos a ángulos
-    alpha = math.degrees(math.atan(numerador/denominador))
-
-    return alpha
