@@ -32,15 +32,10 @@ between_obstacles = False
 # Barrido para detectar la primera y segunda lata
 alfa, h1, h2 = (0,0,0)
 # Bucle para llegar a la línea
-while True:
-    if line_detected:
-        break
+while not line_detected:
     # Barrido para detectar la primera y segunda lata
     alfa, h1, h2 = sweep(left_motor, right_motor, ultrasonic, sweep_left_range, sweep_right_range)
     print(str(alfa), str(h1), str(h2))
-    # En futuros barridos se prioriza la detección por el lado derecho
-    sweep_left_range = -10
-    sweep_right_range = 50
     if h2 is None:
         # Gira 25 grados a la derecha y avanza 10 cm
         girar_grados(25, left_motor, right_motor)
@@ -55,10 +50,13 @@ while True:
         if not line_detected:
             girar_grados(-angle_to_obstacle_after_movement(h1, 10, 25), left_motor, right_motor)
         continue
-    if alfa < 0:
-        beta = angle_to_line(h1, h2)
-    else:
-        beta = -angle_to_line(h1, h2)
+    try:
+        if alfa < 0:
+            beta = angle_to_line(h1, h2)
+        else:
+            beta = -angle_to_line(h1, h2)
+    except:
+        continue
     print("BETA", str(beta))
     if abs(beta) > 15:
         print("LINE", str(beta))
@@ -73,13 +71,19 @@ while True:
 # Si no está entre las latas, acercarse a la primera lata, rodearla y volver a la línea
 if not between_obstacles:
     obstacle = 0
-    # El robot gira hacia la lata en un rango de 100 grados
     if alfa > 0:
         # Si empezó en la zona inferior del mapa
-        _,obstacle,_ = sweep(left_motor, right_motor, ultrasonic, 60, 120)
+        while(color_sensor.color != 1):
+            left_motor.on(SpeedPercent(20), block=False)
+            right_motor.on(SpeedPercent(-20), block=False)
     else:
-        _,obstacle,_ = sweep(left_motor, right_motor, ultrasonic, -120, -60)
-    obstacle = keep_until_close_to_obstacle(left_motor, right_motor, ultrasonic, obstacle)
+        while(color_sensor.color != 1):
+            left_motor.on(SpeedPercent(-20), block=False)
+            right_motor.on(SpeedPercent(20), block=False)
+    sleep(0.2)
+    left_motor.off()
+    right_motor.off()
+    obstacle = keep_until_close_to_obstacle(left_motor, right_motor, ultrasonic, color_sensor)
     go_around_obstacle(left_motor, right_motor, ultrasonic, color_sensor, obstacle)
 
 # Entre las dos latas, girar hasta que cada rueda esté a un lado de la línea

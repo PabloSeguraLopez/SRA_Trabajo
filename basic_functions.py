@@ -40,9 +40,11 @@ def start_program(leds,spkr):
     spkr.beep()
     leds.set_color('LEFT', 'AMBER')
     leds.set_color('RIGHT', 'AMBER')
+    print("Programa iniciado")
 def end_program(leds,spkr):
     spkr.beep()
     leds.set_color('LEFT', 'GREEN')
     leds.set_color('RIGHT', 'GREEN')
+    print("Programa terminado")
     while True:
         continue

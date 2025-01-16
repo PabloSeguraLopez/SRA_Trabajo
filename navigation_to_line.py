@@ -14,13 +14,13 @@ def angle_to_line(first_obstacle_distance, second_obstacle_distance, distance_be
     denominador = math.sqrt(first_obstacle_distance**2 - (numerador)**2)
     
     # Calcula el arcotangente y convierte a grados
-    alfa = math.degrees(math.atan(numerador / denominador))
+    beta = math.degrees(math.atan(numerador / denominador))
     
-    return alfa
+    return beta
 
 def angle_to_obstacle_after_movement(obstacle_distance, distance_moved, angle_moved):
     other_angle = math.degrees(math.asin(distance_moved * math.sin(math.radians(angle_moved)/math.sqrt(obstacle_distance**2 + distance_moved**2 - 2*obstacle_distance*distance_moved*math.cos(math.radians(angle_moved))))))
-    return 180 - abs(angle_moved) - abs(other_angle)
+    return abs(180 - (180 - abs(angle_moved) - abs(other_angle)))
 
 def go_to_line(left_motor, right_motor, color_sensor, angle_to_line):
     # Gira hacia la línea

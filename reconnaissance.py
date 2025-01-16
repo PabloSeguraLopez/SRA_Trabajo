@@ -10,18 +10,20 @@ from basic_functions import *
 def sweep(left_motor, right_motor, ultrasonic_sensor, max_degrees_left, max_degrees_right):
     """
     Función que devuelve el ángulo y distancia del robot a la primera y segunda lata, haciendo un barrido de
-    5 grados en 5 grados, de izquierda a derecha
+    N grados en N grados, de izquierda a derecha
     """
     detections = {}
+    n_degrees = 5
     # Ir hacia el punto angular más a la izq para barrer hacia el punto angular más a la der
     girar_grados(max_degrees_left, left_motor, right_motor)
-    # Hacer movimientos de 5 grados en 5 grados para barrer, del punto más a la izq al más a la der
-    for i in range(max_degrees_left, max_degrees_right, 5):
+    # Hacer movimientos de N grados en N grados para barrer, del punto más a la izq al más a la der
+    for i in range(max_degrees_left, max_degrees_right, n_degrees):
+        sleep(0.25)
         distance_to_obstacle = ultrasonic_sensor.distance_centimeters           
         # Clave -> grados del barrido, valor -> distancia de la detección
         detections[i] = distance_to_obstacle
-        # Girar 5 grados
-        girar_grados(5, left_motor, right_motor)
+        # Girar N grados
+        girar_grados(n_degrees, left_motor, right_motor)
 
     # Calculamos la distancia mínima de las detecciones que corresponden con la detección de la primera lata
     min_distance_angle_first_can = min(detections, key=detections.get)
@@ -30,7 +32,7 @@ def sweep(left_motor, right_motor, ultrasonic_sensor, max_degrees_left, max_degr
 
     keys_to_delete = []
     for angle, distance in detections.items():
-        if distance > min_distance_first_can + 50:
+        if distance > min_distance_first_can + 70:
             # Añadir la clave a la lista de claves a borrar
             keys_to_delete.append(angle)
 
@@ -51,7 +53,11 @@ def sweep(left_motor, right_motor, ultrasonic_sensor, max_degrees_left, max_degr
         min_distance_angle_second_can = 0
         min_distance_second_can = None
     girar_grados(-(max_degrees_right-min_distance_angle_first_can), left_motor, right_motor)
+    if min_distance_second_can is None:
+        alfa = 0
+    else:
+        alfa = min_distance_angle_second_can - min_distance_angle_first_can
     
-    return min_distance_angle_second_can - min_distance_angle_first_can, min_distance_first_can, min_distance_second_can
+    return alfa, min_distance_first_can, min_distance_second_can
     
     
