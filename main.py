@@ -11,6 +11,7 @@ from basic_functions import *
 from navigation_to_line import *
 from reconnaissance import *
 from final_steps import *
+from handle_obstacle import *
 
 # Definición de motores y sensores
 left_motor = LargeMotor(OUTPUT_A)
@@ -21,9 +22,7 @@ ultrasonic = UltrasonicSensor(INPUT_2)
 color_sensor = ColorSensor(INPUT_1)
 
 # Empieza el programa
-spkr.beep()
-leds.set_color('LEFT', 'AMBER')
-leds.set_color('RIGHT', 'AMBER')
+start_program(leds,spkr)
 # El primer barrido es de -30 a 30 grados
 sweep_left_range = -30
 sweep_right_range = 30
@@ -31,29 +30,37 @@ sweep_right_range = 30
 line_detected = False
 between_obstacles = False
 # Barrido para detectar la primera y segunda lata
-alfa, h1, h2 = sweep(left_motor, right_motor, ultrasonic, sweep_left_range, sweep_right_range)
-print(str(alfa), str(h1), str(h2))
+alfa, h1, h2 = (0,0,0)
 # Bucle para llegar a la línea
 while True:
     if line_detected:
         break
-    # Los siguientes barridos son de -180 a 0 grados
-    sweep_left_range = -90
-    sweep_right_range = 0
+    # Barrido para detectar la primera y segunda lata
+    alfa, h1, h2 = sweep(left_motor, right_motor, ultrasonic, sweep_left_range, sweep_right_range)
+    print(str(alfa), str(h1), str(h2))
+    # En futuros barridos se prioriza la detección por el lado derecho
+    sweep_left_range = -10
+    sweep_right_range = 50
     if h2 is None:
+        # Gira 25 grados a la derecha y avanza 10 cm
         girar_grados(25, left_motor, right_motor)
         for i in range(0, 5):
             avanzar_cm(2, left_motor, right_motor)
-            if color_sensor.color != 1:
+            if color_sensor.color == 1:
                 line_detected = True
+                # Alfa se declara en negativo para que posteriormentese tenga en cuenta que empezó en la zona superior del mapa
+                alfa = -1
                 break
+        # Vuelve a mirar hacia la lata (teniendo en cuenta la rotación y avance)
+        if not line_detected:
+            girar_grados(-angle_to_obstacle_after_movement(h1, 10, 25), left_motor, right_motor)
         continue
     if alfa < 0:
         beta = angle_to_line(h1, h2)
     else:
         beta = -angle_to_line(h1, h2)
     print("BETA", str(beta))
-    if abs(h1-h2)>20:
+    if abs(beta) > 15:
         print("LINE", str(beta))
         go_to_line(left_motor, right_motor, color_sensor, beta)
     else:
@@ -63,22 +70,21 @@ while True:
     line_detected = True
 
 # Linea detectada
-if alfa > 0:
-    # Si empezó en la zona inferior del mapa
-    girar_grados(90, left_motor, right_motor)
-else:
-    girar_grados(-90, left_motor, right_motor)
 # Si no está entre las latas, acercarse a la primera lata, rodearla y volver a la línea
 if not between_obstacles:
-    sweep(left_motor, right_motor, ultrasonic, -20, 20)
-    h1 = keep_until_close_to_obstacle(left_motor, right_motor, ultrasonic, h1)
-    go_around_obstacle(left_motor, right_motor, ultrasonic, color_sensor, h1)
+    obstacle = 0
+    # El robot gira hacia la lata en un rango de 100 grados
+    if alfa > 0:
+        # Si empezó en la zona inferior del mapa
+        _,obstacle,_ = sweep(left_motor, right_motor, ultrasonic, 60, 120)
+    else:
+        _,obstacle,_ = sweep(left_motor, right_motor, ultrasonic, -120, -60)
+    obstacle = keep_until_close_to_obstacle(left_motor, right_motor, ultrasonic, obstacle)
+    go_around_obstacle(left_motor, right_motor, ultrasonic, color_sensor, obstacle)
+
+# Entre las dos latas, girar hasta que cada rueda esté a un lado de la línea
 turn_in_goal(left_motor, right_motor, color_sensor)
 
 
 # Fin del programa
-spkr.beep()
-leds.set_color('LEFT', 'GREEN')
-leds.set_color('RIGHT', 'GREEN')
-while True:
-    continue
+end_program(leds,spkr)

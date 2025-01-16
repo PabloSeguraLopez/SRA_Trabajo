@@ -35,3 +35,14 @@ def evade_correcting_angle(left_motor, right_motor):
     left_motor.reset()
     right_motor.reset()
     return
+
+def start_program(leds,spkr):
+    spkr.beep()
+    leds.set_color('LEFT', 'AMBER')
+    leds.set_color('RIGHT', 'AMBER')
+def end_program(leds,spkr):
+    spkr.beep()
+    leds.set_color('LEFT', 'GREEN')
+    leds.set_color('RIGHT', 'GREEN')
+    while True:
+        continue
