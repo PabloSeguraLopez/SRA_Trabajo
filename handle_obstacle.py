@@ -13,14 +13,10 @@ def keep_until_close_to_obstacle(left_motor, right_motor, ultrasonic_sensor, col
     """
     Función que hace que el robot avance hasta que se encuentre a una distancia menor o igual a la indicada
     """
-    while ultrasonic_sensor.distance_centimeters > 10:
-        avanzar_cm(1, left_motor, right_motor)
-        grados = 0
-        while color_sensor.color != 1:
-            grados += 5
-            girar_grados(grados, left_motor, right_motor)
-            girar_grados(-2*grados, left_motor, right_motor)
-    return ultrasonic_sensor.distance_centimeters
+    _, h1, _ = sweep(left_motor, right_motor, ultrasonic_sensor, -30, 30)
+    avanzar_cm(h1-15, left_motor, right_motor)
+    _, h1, _ = sweep(left_motor, right_motor, ultrasonic_sensor, -30, 30)
+    return h1
 
 def go_around_obstacle(left_motor, right_motor, ultrasonic_sensor, color_sensor, distance_to_obstacle):
     """
@@ -29,11 +25,11 @@ def go_around_obstacle(left_motor, right_motor, ultrasonic_sensor, color_sensor,
     # Girar 90 grados a la derecha
     girar_grados(90, left_motor, right_motor)
     # Avanzar 20 cm
-    avanzar_cm(10, left_motor, right_motor)
+    avanzar_cm(20, left_motor, right_motor)
     # Girar 90 grados a la derecha
     girar_grados(-90, left_motor, right_motor)
-    # Avanzar 20+10(diametro aproximado de la lata) cm
-    avanzar_cm(30+ distance_to_obstacle, left_motor, right_motor)
+    # Avanzar 10(diametro aproximado de la lata)+distancia inicial a la lata cm
+    avanzar_cm(10+ distance_to_obstacle, left_motor, right_motor)
     # Girar y avanzar hasta llegar a la línea
     alfa, h1, h2 = sweep(left_motor, right_motor, ultrasonic_sensor, -150, -30)
     go_to_gap(alfa, left_motor, right_motor, color_sensor)

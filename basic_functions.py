@@ -22,10 +22,10 @@ def avanzar_cm(distancia, left_motor, right_motor, velocidad=20):
     evade_correcting_angle(left_motor, right_motor)
 
 # Función para girar a la derecha 90º
-def girar_grados(angulo_giro, left_motor, right_motor, velocidad=20):
+def girar_grados(angulo_giro, left_motor, right_motor, velocidad=10):
     # Cálculos
-    distancia_giro_90 = (pi * ancho_robot) / (360/angulo_giro)
-    grados = ((distancia_giro_90 / circunferencia_rueda) * 360)  # grados para cada rueda
+    distancia_giro = (pi * ancho_robot) / (360/angulo_giro)
+    grados = ((distancia_giro / circunferencia_rueda) * 360)  # grados para cada rueda
     # Movimiento
     left_motor.on_for_degrees(speed=velocidad, degrees=grados, brake=True, block=False)
     right_motor.on_for_degrees(speed=velocidad, degrees=-grados, brake=True, block=True)
@@ -46,5 +46,3 @@ def end_program(leds,spkr):
     leds.set_color('LEFT', 'GREEN')
     leds.set_color('RIGHT', 'GREEN')
     print("Programa terminado")
-    while True:
-        continue

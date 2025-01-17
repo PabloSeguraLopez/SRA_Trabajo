@@ -22,6 +22,10 @@ def angle_to_obstacle_after_movement(obstacle_distance, distance_moved, angle_mo
     other_angle = math.degrees(math.asin(distance_moved * math.sin(math.radians(angle_moved)/math.sqrt(obstacle_distance**2 + distance_moved**2 - 2*obstacle_distance*distance_moved*math.cos(math.radians(angle_moved))))))
     return abs(180 - (180 - abs(angle_moved) - abs(other_angle)))
 
+def is_between_obstacles(angle_between_obstacles, distance_from_second_obstacle, distance_between_obstacles=40):
+    first_obstacle_angle = math.degrees(math.asin(distance_from_second_obstacle * math.sin(math.radians(abs(angle_between_obstacles)))/distance_between_obstacles))
+    return abs(first_obstacle_angle) < 90
+
 def go_to_line(left_motor, right_motor, color_sensor, angle_to_line):
     # Gira hacia la línea
     girar_grados(angle_to_line, left_motor, right_motor, velocidad=20)

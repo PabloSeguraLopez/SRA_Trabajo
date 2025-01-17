@@ -13,12 +13,12 @@ def sweep(left_motor, right_motor, ultrasonic_sensor, max_degrees_left, max_degr
     N grados en N grados, de izquierda a derecha
     """
     detections = {}
-    n_degrees = 5
+    n_degrees = 10
     # Ir hacia el punto angular más a la izq para barrer hacia el punto angular más a la der
     girar_grados(max_degrees_left, left_motor, right_motor)
     # Hacer movimientos de N grados en N grados para barrer, del punto más a la izq al más a la der
     for i in range(max_degrees_left, max_degrees_right, n_degrees):
-        sleep(0.25)
+        sleep(0.5)
         distance_to_obstacle = ultrasonic_sensor.distance_centimeters           
         # Clave -> grados del barrido, valor -> distancia de la detección
         detections[i] = distance_to_obstacle
