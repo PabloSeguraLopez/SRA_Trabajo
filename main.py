@@ -52,6 +52,7 @@ while not line_detected:
 
     # Verificamos si no hay segunda lata (h2 is None) o si el ángulo entre latas es muy pequeño (abs(alfa) <= 31)
     if h2 is None or abs(alfa) <= 31:
+        alfa = -1
         # Gira 25 grados a la derecha
         girar_grados(25, left_motor, right_motor)
 
